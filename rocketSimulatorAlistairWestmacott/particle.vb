@@ -23,24 +23,29 @@
 
     Protected dragConst As Single
     Protected gravity As Single
-    Protected gravityConst As Single
+    Protected gravityConst As Single = 0.0000000000667 ' universal gravitational constant
+    Protected planetMass As Double ' stores the mass of the planet which the particle is "bound" to
+    Protected planetRadius As Double ' stores the radius of the planet which the particle is "bound" to
 
     Protected gravityUnitVector As New vectorQuantity
     Protected xUnitVector As New vectorQuantity
-    Protected earthCentre As New vectorQuantity
+
 
     'Protected mainSpring As spring
 
-    Public Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As Single, ByVal gravity As Single, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal initialValues As vectorQuantity())
+    Public Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As Single, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal initialValues As vectorQuantity(), ByVal planetMass As Double, ByVal planetRadius As Double)
         Me.vacuum = vacuum
         Me.floor = floor
         Me.dragConst = dragConst
-        Me.gravity = gravity
-        Me.gravityConst = gravity * 6400000 ^ 2 ' used as a constant for use in the gravity depleting equation. 6400 000 is the radius of the earth in metres
         Me.massDecay = massDecay
         Me.finiteFuel = finiteFuel
         Me.airThinning = airThinning
         Me.gravityThinning = gravityThinning
+
+        Me.planetMass = planetMass
+        Me.planetRadius = planetRadius
+
+        Me.gravity = gravity
 
         weightForce.pen = Pens.Blue
         dragForce.pen = Pens.DarkGray
@@ -57,10 +62,12 @@
         Me.a = initialValues(2)
         Me.thrust = initialValues(3)
 
-
-        earthCentre.y = -6400000
-
         xUnitVector.x = -1
+    End Sub
+
+    Public Sub updatePlanet(ByVal mass As Double, ByVal radius As Double)
+        planetMass = mass
+        planetRadius = radius
     End Sub
 
     Public Overridable Sub nextFrame(ByVal time As Single, ByVal g As Graphics)
@@ -93,7 +100,9 @@
 
         'thrustForce = mainSpring.tension() ' + secondSpring.tension('mainSpring.anchor)
 
-        weightForce = gravityUnitVector * gravity * m
+        'weightForce = gravityUnitVector * gravity * m
+
+        weightForce = gravityUnitVector * gravityConst * planetMass * m / (planetRadius + s.y) ^ 2
 
         a = resultantForce(True) / m ' a = f / m (rearrangement of F=ma)
         s += v * time + a * 0.5 * time ^ 2 ' s = s_0 + ut + 0.5at^2
@@ -122,11 +131,6 @@
         For Each forceIndex In forces
             g.DrawLine(Pens.Purple, particlePosition.x + startPosition.x, particlePosition.y - startPosition.y, particlePosition.x + startPosition.x + forceIndex.x, particlePosition.y - startPosition.y - forceIndex.y)
         Next
-
-        'g.DrawLine(Pens.Blue, 280 + startPosition.x, 310 - startPosition.y, 280 + startPosition.x + weightForce.x, 310 - startPosition.y - weightForce.y)
-        'g.DrawLine(Pens.DarkGray, 280 + startPosition.x, 310 - startPosition.y, 280 + startPosition.x + dragForce.x, 310 - startPosition.y - dragForce.y)
-        'g.DrawLine(Pens.Red, 280 + startPosition.x, 310 - startPosition.y, 280 + startPosition.x + thrustForce.x, 310 - startPosition.y - thrustForce.y)
-        'g.DrawLine(Pens.Green, 280 + startPosition.x, 310 - startPosition.y, 280 + startPosition.x + normalForce.x, 310 - startPosition.y - normalForce.y)
 
         g.DrawLine(Pens.Blue, particlePosition.x + startPosition.x, particlePosition.y - startPosition.y, particlePosition.x + startPosition.x + (weightForce.x / 100000), particlePosition.y - startPosition.y - (weightForce.y / 100000))
         g.DrawLine(Pens.DarkGray, particlePosition.x + startPosition.x, particlePosition.y - startPosition.y, particlePosition.x + startPosition.x + (dragForce.x / 100000), particlePosition.y - startPosition.y - (dragForce.y / 100000))

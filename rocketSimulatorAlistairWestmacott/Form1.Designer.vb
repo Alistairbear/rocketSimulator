@@ -26,7 +26,6 @@ Partial Class Form1
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.tmrMain = New System.Windows.Forms.Timer(Me.components)
         Me.btnLaunch = New System.Windows.Forms.Button()
-        Me.txtGravity = New System.Windows.Forms.TextBox()
         Me.lblSpeed = New System.Windows.Forms.Label()
         Me.lblAcc = New System.Windows.Forms.Label()
         Me.btnStop = New System.Windows.Forms.Button()
@@ -39,7 +38,6 @@ Partial Class Form1
         Me.btnControl = New System.Windows.Forms.Button()
         Me.btnSave = New System.Windows.Forms.Button()
         Me.pctSimulation = New System.Windows.Forms.PictureBox()
-        Me.lblGravity = New System.Windows.Forms.Label()
         Me.lblAirResistance = New System.Windows.Forms.Label()
         Me.lblGoal = New System.Windows.Forms.Label()
         Me.txtGoal = New System.Windows.Forms.TextBox()
@@ -50,6 +48,10 @@ Partial Class Form1
         Me.sldSpeed = New System.Windows.Forms.TrackBar()
         Me.lblSlider = New System.Windows.Forms.Label()
         Me.tmrSave = New System.Windows.Forms.Timer(Me.components)
+        Me.cmbPlanets = New System.Windows.Forms.ComboBox()
+        Me.lblPlanet = New System.Windows.Forms.Label()
+        Me.btnPlanet = New System.Windows.Forms.Button()
+        Me.cbxColours = New System.Windows.Forms.CheckBox()
         CType(Me.pctSimulation, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.sldSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -66,19 +68,10 @@ Partial Class Form1
         Me.btnLaunch.Text = "LAUNCH"
         Me.btnLaunch.UseVisualStyleBackColor = True
         '
-        'txtGravity
-        '
-        Me.txtGravity.Enabled = False
-        Me.txtGravity.Location = New System.Drawing.Point(856, 64)
-        Me.txtGravity.Name = "txtGravity"
-        Me.txtGravity.Size = New System.Drawing.Size(100, 20)
-        Me.txtGravity.TabIndex = 1
-        Me.txtGravity.Text = "9.81"
-        '
         'lblSpeed
         '
         Me.lblSpeed.AutoSize = True
-        Me.lblSpeed.Location = New System.Drawing.Point(833, 152)
+        Me.lblSpeed.Location = New System.Drawing.Point(834, 179)
         Me.lblSpeed.Name = "lblSpeed"
         Me.lblSpeed.Size = New System.Drawing.Size(41, 13)
         Me.lblSpeed.TabIndex = 2
@@ -87,7 +80,7 @@ Partial Class Form1
         'lblAcc
         '
         Me.lblAcc.AutoSize = True
-        Me.lblAcc.Location = New System.Drawing.Point(805, 180)
+        Me.lblAcc.Location = New System.Drawing.Point(806, 207)
         Me.lblAcc.Name = "lblAcc"
         Me.lblAcc.Size = New System.Drawing.Size(69, 13)
         Me.lblAcc.TabIndex = 3
@@ -105,7 +98,7 @@ Partial Class Form1
         '
         'txtDrag
         '
-        Me.txtDrag.Location = New System.Drawing.Point(856, 90)
+        Me.txtDrag.Location = New System.Drawing.Point(857, 117)
         Me.txtDrag.Name = "txtDrag"
         Me.txtDrag.Size = New System.Drawing.Size(100, 20)
         Me.txtDrag.TabIndex = 7
@@ -114,7 +107,7 @@ Partial Class Form1
         'lblTime
         '
         Me.lblTime.AutoSize = True
-        Me.lblTime.Location = New System.Drawing.Point(841, 207)
+        Me.lblTime.Location = New System.Drawing.Point(842, 234)
         Me.lblTime.Name = "lblTime"
         Me.lblTime.Size = New System.Drawing.Size(33, 13)
         Me.lblTime.TabIndex = 8
@@ -127,7 +120,7 @@ Partial Class Form1
         'lblRealtime
         '
         Me.lblRealtime.AutoSize = True
-        Me.lblRealtime.Location = New System.Drawing.Point(823, 233)
+        Me.lblRealtime.Location = New System.Drawing.Point(824, 260)
         Me.lblRealtime.Name = "lblRealtime"
         Me.lblRealtime.Size = New System.Drawing.Size(51, 13)
         Me.lblRealtime.TabIndex = 9
@@ -135,7 +128,7 @@ Partial Class Form1
         '
         'btnValues
         '
-        Me.btnValues.Location = New System.Drawing.Point(861, 266)
+        Me.btnValues.Location = New System.Drawing.Point(862, 293)
         Me.btnValues.Name = "btnValues"
         Me.btnValues.Size = New System.Drawing.Size(75, 23)
         Me.btnValues.TabIndex = 10
@@ -144,7 +137,7 @@ Partial Class Form1
         '
         'btnAssumptions
         '
-        Me.btnAssumptions.Location = New System.Drawing.Point(861, 295)
+        Me.btnAssumptions.Location = New System.Drawing.Point(862, 322)
         Me.btnAssumptions.Name = "btnAssumptions"
         Me.btnAssumptions.Size = New System.Drawing.Size(75, 23)
         Me.btnAssumptions.TabIndex = 11
@@ -162,7 +155,7 @@ Partial Class Form1
         '
         'btnSave
         '
-        Me.btnSave.Location = New System.Drawing.Point(861, 325)
+        Me.btnSave.Location = New System.Drawing.Point(862, 352)
         Me.btnSave.Name = "btnSave"
         Me.btnSave.Size = New System.Drawing.Size(75, 23)
         Me.btnSave.TabIndex = 13
@@ -178,19 +171,10 @@ Partial Class Form1
         Me.pctSimulation.TabIndex = 14
         Me.pctSimulation.TabStop = False
         '
-        'lblGravity
-        '
-        Me.lblGravity.AutoSize = True
-        Me.lblGravity.Location = New System.Drawing.Point(714, 69)
-        Me.lblGravity.Name = "lblGravity"
-        Me.lblGravity.Size = New System.Drawing.Size(136, 13)
-        Me.lblGravity.TabIndex = 15
-        Me.lblGravity.Text = "Acceleration due to gravity:"
-        '
         'lblAirResistance
         '
         Me.lblAirResistance.AutoSize = True
-        Me.lblAirResistance.Location = New System.Drawing.Point(733, 93)
+        Me.lblAirResistance.Location = New System.Drawing.Point(734, 120)
         Me.lblAirResistance.Name = "lblAirResistance"
         Me.lblAirResistance.Size = New System.Drawing.Size(117, 13)
         Me.lblAirResistance.TabIndex = 16
@@ -216,7 +200,7 @@ Partial Class Form1
         'lblHeight
         '
         Me.lblHeight.AutoSize = True
-        Me.lblHeight.Location = New System.Drawing.Point(829, 125)
+        Me.lblHeight.Location = New System.Drawing.Point(830, 152)
         Me.lblHeight.Name = "lblHeight"
         Me.lblHeight.Size = New System.Drawing.Size(45, 13)
         Me.lblHeight.TabIndex = 20
@@ -224,7 +208,7 @@ Partial Class Form1
         '
         'btnBuild
         '
-        Me.btnBuild.Location = New System.Drawing.Point(861, 354)
+        Me.btnBuild.Location = New System.Drawing.Point(862, 381)
         Me.btnBuild.Name = "btnBuild"
         Me.btnBuild.Size = New System.Drawing.Size(75, 36)
         Me.btnBuild.TabIndex = 23
@@ -267,11 +251,52 @@ Partial Class Form1
         '
         Me.tmrSave.Interval = 1000
         '
+        'cmbPlanets
+        '
+        Me.cmbPlanets.FormattingEnabled = True
+        Me.cmbPlanets.Location = New System.Drawing.Point(856, 63)
+        Me.cmbPlanets.Name = "cmbPlanets"
+        Me.cmbPlanets.Size = New System.Drawing.Size(100, 21)
+        Me.cmbPlanets.TabIndex = 30
+        '
+        'lblPlanet
+        '
+        Me.lblPlanet.AutoSize = True
+        Me.lblPlanet.Location = New System.Drawing.Point(776, 71)
+        Me.lblPlanet.Name = "lblPlanet"
+        Me.lblPlanet.Size = New System.Drawing.Size(75, 13)
+        Me.lblPlanet.TabIndex = 31
+        Me.lblPlanet.Text = "Celestial body:"
+        '
+        'btnPlanet
+        '
+        Me.btnPlanet.Location = New System.Drawing.Point(881, 90)
+        Me.btnPlanet.Name = "btnPlanet"
+        Me.btnPlanet.Size = New System.Drawing.Size(75, 23)
+        Me.btnPlanet.TabIndex = 32
+        Me.btnPlanet.Text = "Set Body"
+        Me.btnPlanet.UseVisualStyleBackColor = True
+        '
+        'cbxColours
+        '
+        Me.cbxColours.AutoSize = True
+        Me.cbxColours.Location = New System.Drawing.Point(749, 94)
+        Me.cbxColours.Name = "cbxColours"
+        Me.cbxColours.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.cbxColours.Size = New System.Drawing.Size(128, 17)
+        Me.cbxColours.TabIndex = 33
+        Me.cbxColours.Text = "Use planetary colours"
+        Me.cbxColours.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(968, 643)
+        Me.Controls.Add(Me.cbxColours)
+        Me.Controls.Add(Me.btnPlanet)
+        Me.Controls.Add(Me.lblPlanet)
+        Me.Controls.Add(Me.cmbPlanets)
         Me.Controls.Add(Me.lblSlider)
         Me.Controls.Add(Me.sldSpeed)
         Me.Controls.Add(Me.btnSetGoal)
@@ -281,7 +306,6 @@ Partial Class Form1
         Me.Controls.Add(Me.lblGoal)
         Me.Controls.Add(Me.txtGoal)
         Me.Controls.Add(Me.lblAirResistance)
-        Me.Controls.Add(Me.lblGravity)
         Me.Controls.Add(Me.pctSimulation)
         Me.Controls.Add(Me.btnSave)
         Me.Controls.Add(Me.btnControl)
@@ -293,7 +317,6 @@ Partial Class Form1
         Me.Controls.Add(Me.btnStop)
         Me.Controls.Add(Me.lblAcc)
         Me.Controls.Add(Me.lblSpeed)
-        Me.Controls.Add(Me.txtGravity)
         Me.Controls.Add(Me.btnLaunch)
         Me.DoubleBuffered = True
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -307,7 +330,6 @@ Partial Class Form1
     End Sub
     Friend WithEvents tmrMain As System.Windows.Forms.Timer
     Friend WithEvents btnLaunch As System.Windows.Forms.Button
-    Friend WithEvents txtGravity As System.Windows.Forms.TextBox
     Friend WithEvents lblSpeed As System.Windows.Forms.Label
     Friend WithEvents lblAcc As System.Windows.Forms.Label
     Friend WithEvents btnStop As System.Windows.Forms.Button
@@ -320,7 +342,6 @@ Partial Class Form1
     Friend WithEvents btnControl As System.Windows.Forms.Button
     Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents pctSimulation As System.Windows.Forms.PictureBox
-    Friend WithEvents lblGravity As System.Windows.Forms.Label
     Friend WithEvents lblAirResistance As System.Windows.Forms.Label
     Friend WithEvents lblGoal As System.Windows.Forms.Label
     Friend WithEvents txtGoal As System.Windows.Forms.TextBox
@@ -331,5 +352,9 @@ Partial Class Form1
     Friend WithEvents sldSpeed As System.Windows.Forms.TrackBar
     Friend WithEvents lblSlider As System.Windows.Forms.Label
     Friend WithEvents tmrSave As System.Windows.Forms.Timer
+    Friend WithEvents cmbPlanets As System.Windows.Forms.ComboBox
+    Friend WithEvents lblPlanet As System.Windows.Forms.Label
+    Friend WithEvents btnPlanet As System.Windows.Forms.Button
+    Friend WithEvents cbxColours As System.Windows.Forms.CheckBox
 
 End Class

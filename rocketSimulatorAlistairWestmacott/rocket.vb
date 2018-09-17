@@ -37,9 +37,9 @@
 
     'Private form1 As Form
 
-    Public Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As String, ByVal gravity As String, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal initialValues As vectorQuantity())
+    Public Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As String, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal initialValues As vectorQuantity(), ByVal planetMass As Double, ByVal planetRadius As Double)
 
-        MyBase.New(vacuum, floor, airThinning, gravityThinning, dragConst, gravity, massDecay, finiteFuel, initialValues)
+        MyBase.New(vacuum, floor, airThinning, gravityThinning, dragConst, massDecay, finiteFuel, initialValues, planetMass, planetRadius)
         loadNewRocket("default.rkt")
     End Sub
 

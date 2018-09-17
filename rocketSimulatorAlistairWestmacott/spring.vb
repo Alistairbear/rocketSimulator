@@ -15,8 +15,8 @@
 
     Protected snap As Boolean
 
-    Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As Single, ByVal gravity As Single, ByVal mass As Single, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal lambda As Single, ByVal length As Single, ByVal anchorX As Single, ByVal anchorY As Single, ByVal name As Integer, ByVal initialValues As vectorQuantity())
-        MyBase.New(vacuum, floor, airThinning, gravityThinning, dragConst, gravity, massDecay, finiteFuel, initialValues)
+    Sub New(ByVal vacuum As Boolean, ByVal floor As Boolean, ByVal airThinning As Boolean, ByVal gravityThinning As Boolean, ByVal dragConst As Single, ByVal mass As Single, ByVal massDecay As Boolean, ByVal finiteFuel As Boolean, ByVal lambda As Single, ByVal length As Single, ByVal anchorX As Single, ByVal anchorY As Single, ByVal name As Integer, ByVal initialValues As vectorQuantity(), ByVal planetMass As Double, ByVal planetRadius As Double)
+        MyBase.New(vacuum, floor, airThinning, gravityThinning, dragConst, massDecay, finiteFuel, initialValues, planetMass, planetRadius)
         modulusOfElasticity = lambda
         naturalLength = length
         displacement.x = anchorX

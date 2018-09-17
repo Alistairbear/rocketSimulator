@@ -9,6 +9,7 @@
     Private vacuum As Boolean = False
     Private airThinning As Boolean = False
     Private gravityThinning As Boolean = False
+    Private mainPlanet As celestial
 
     Public Enum celestial
         mercury
@@ -22,8 +23,12 @@
         pluto
         moon
         sun
-        neutron
     End Enum
+
+    Private radius As New Dictionary(Of celestial, Single)
+    Private celestialMass As New Dictionary(Of celestial, Single)
+    Private groundColour As New Dictionary(Of celestial, Brush)
+    Private skyColour As New Dictionary(Of celestial, Brush)
 
     ' Stores the initial conditions for the rocket
     ' displacement, velocity, acceleration, thrust
@@ -41,37 +46,106 @@
     Private goal As New goal ' Stores the vertical displacement at which the goal is currently set
 
     Sub New(ByVal drag As Single, ByVal goal As Single, ByVal planet As celestial)
-        Dim radius As Single
-        Dim planetMass As Single
-        Select Case planet
-            Case celestial.earth
-                radius = 6
-                planetMass = 0
-        End Select
+        initialiseDictionaries()
+        mainPlanet = planet
         Me.gravity = 9.81
         Me.drag = drag
         Me.goal.setGoal(goal)
         particleLocation.x = 270
         particleLocation.y = 255
-        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, gravity, massDecay, finiteFuel, initialValues)
+        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, massDecay, finiteFuel, initialValues, celestialMass(planet), radius(planet))
         path = IO.Path.Combine(My.Application.Info.DirectoryPath, "temp.csv")
         ' This adds the titles for the table of data to the output spreadsheet
         Dim output As String = "time, mass, displacement x, displacement y, displacement, velocity x, velocity y, velocity, acceleration x, acceleration y, acceleration" & vbCrLf
         My.Computer.FileSystem.WriteAllText(path, output, False) ' adds the string to the output .csv file. path is the location, output is the string to be added and false means don't append, overwrite instead
     End Sub
 
-    Public Sub refreshRocket()
-        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, gravity, massDecay, finiteFuel, initialValues)
+    ' adds radius then mass of all celestial bodies in dictionary
+    Private Sub initialiseDictionaries()
+        radius.Add(celestial.mercury, 2440000.0) ' mercury
+        celestialMass.Add(celestial.mercury, 3.285E+23)
+        groundColour.Add(celestial.mercury, Brushes.DarkSlateGray)
+        skyColour.Add(celestial.mercury, Brushes.Black)
+
+        radius.Add(celestial.venus, 6052000.0) ' venus
+        celestialMass.Add(celestial.venus, 4.867E+24)
+        groundColour.Add(celestial.venus, Brushes.Olive)
+        skyColour.Add(celestial.venus, Brushes.Yellow)
+
+        radius.Add(celestial.earth, 6371000.0) ' earth
+        celestialMass.Add(celestial.earth, 5.972E+24)
+        groundColour.Add(celestial.earth, Brushes.LightGreen)
+        skyColour.Add(celestial.earth, Brushes.LightSkyBlue)
+
+        radius.Add(celestial.mars, 3390000.0) ' mars
+        celestialMass.Add(celestial.mars, 6.39E+23)
+        groundColour.Add(celestial.mars, Brushes.Chocolate)
+        skyColour.Add(celestial.mars, Brushes.BurlyWood)
+
+        radius.Add(celestial.jupiter, 69911000.0) ' jupiter
+        celestialMass.Add(celestial.jupiter, 1.898E+27)
+        groundColour.Add(celestial.jupiter, Brushes.Chocolate)
+        skyColour.Add(celestial.jupiter, Brushes.Black)
+
+        radius.Add(celestial.saturn, 58232000.0) ' saturn
+        celestialMass.Add(celestial.saturn, 5.683E+26)
+        groundColour.Add(celestial.saturn, Brushes.DarkKhaki)
+        skyColour.Add(celestial.saturn, Brushes.Black)
+
+        radius.Add(celestial.uranus, 25362000.0) ' uranus
+        celestialMass.Add(celestial.uranus, 8.681E+25)
+        groundColour.Add(celestial.uranus, Brushes.DeepSkyBlue)
+        skyColour.Add(celestial.uranus, Brushes.Black)
+
+        radius.Add(celestial.neptune, 24622000.0) ' neptune
+        celestialMass.Add(celestial.neptune, 1.024E+26)
+        groundColour.Add(celestial.neptune, Brushes.CornflowerBlue)
+        skyColour.Add(celestial.neptune, Brushes.Black)
+
+        radius.Add(celestial.pluto, 1188000.0) ' pluto
+        celestialMass.Add(celestial.pluto, 1.309E+22)
+        groundColour.Add(celestial.pluto, Brushes.Chocolate)
+        skyColour.Add(celestial.pluto, Brushes.Black)
+
+        radius.Add(celestial.moon, 1737000.0) ' moon
+        celestialMass.Add(celestial.moon, 7.348E+22)
+        groundColour.Add(celestial.moon, Brushes.DimGray)
+        skyColour.Add(celestial.moon, Brushes.Black)
+
+        radius.Add(celestial.sun, 695508000.0) ' sun
+        celestialMass.Add(celestial.sun, 1.989E+30)
+        groundColour.Add(celestial.sun, Brushes.White)
+        skyColour.Add(celestial.sun, Brushes.Black)
+
     End Sub
 
-    Public Sub drawAxes(ByRef g As Graphics)
+    Public Sub updatePlanet(ByVal planet As celestial)
+        mainPlanet = planet
+        mainRocket.updatePlanet(celestialMass(planet), radius(planet))
+    End Sub
+
+    Public Sub refreshRocket()
+        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, massDecay, finiteFuel, initialValues, celestialMass(mainPlanet), radius(mainPlanet))
+    End Sub
+
+    Public Sub drawAxes(ByVal colours As Boolean, ByRef g As Graphics)
 
         ' draw the sky
-        g.FillRectangle(Brushes.LightSkyBlue, 20, 5, 500, 500)
+        If colours Then
+            g.FillRectangle(skyColour(mainPlanet), 20, 5, 500, 500)
+        Else
+            g.FillRectangle(skyColour(celestial.earth), 20, 5, 500, 500)
+        End If
+
 
         If floor Then ' if there is a floor
             If mainRocket.displacement.y < 250 * scale Then ' if the rocket is near the floor
-                g.FillRectangle(Brushes.LightGreen, 20, particleLocation.y + mainRocket.displacement.y, 500, (scale * 250) - mainRocket.displacement.y) ' draw in the floor
+                If colours Then
+                    ' draw in the floor
+                    g.FillRectangle(groundColour(mainPlanet), 20, particleLocation.y + mainRocket.displacement.y, 500, (scale * 250) - mainRocket.displacement.y)
+                Else
+                    g.FillRectangle(groundColour(celestial.earth), 20, particleLocation.y + mainRocket.displacement.y, 500, (scale * 250) - mainRocket.displacement.y)
+                End If
             End If
         End If
 
@@ -207,7 +281,5 @@
             goal.setGoal(value)
         End Set
     End Property
-
-
 
 End Class

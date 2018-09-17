@@ -10,7 +10,13 @@
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-        mainSimulation = New simulation(txtDrag.Text, txtGoal.Text) ' create a new simulation
+        For Each i In [Enum].GetValues(GetType(simulation.celestial))
+            cmbPlanets.Items.Add(i)
+        Next
+        cmbPlanets.SelectedIndex = 2
+
+        mainSimulation = New simulation(txtDrag.Text, txtGoal.Text, cmbPlanets.SelectedIndex) ' create a new simulation
+
         AddHandler pctSimulation.Paint, AddressOf Me.pctOutput_Paint ' this line links the pctOutput_paint() sub to the event of the simulation picture box being painted
         ' it basically means that whenever the form refreshes, the 
     End Sub
@@ -18,7 +24,7 @@
     Private Sub pctOutput_Paint(ByVal sender As Object, ByVal e As System.Windows.Forms.PaintEventArgs)
         ' Create a local version of the graphics object for the PictureBox.
         g = e.Graphics
-        mainSimulation.drawAxes(g) ' draw the axes and grid for the simulation box. This also includes the goal point and the particle loop
+        mainSimulation.drawAxes(cbxColours.Checked, g) ' draw the axes and grid for the simulation box. This also includes the goal point and the particle loop
         mainSimulation.mainRocket.drawForces(g, New vectorQuantity, mainSimulation.particleAnchor) ' this draws the forces onto the simulation box
     End Sub
 
@@ -154,5 +160,9 @@
             MsgBox("Please only enter numbers.") ' tell the user to only enter numbers
             txtGoal.Text = "100" ' reset the text box to 100 to deter them from doing it again
         End If
+    End Sub
+
+    Private Sub btnPlanet_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPlanet.Click
+        mainSimulation.updatePlanet(cmbPlanets.SelectedIndex)
     End Sub
 End Class
