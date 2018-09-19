@@ -2,16 +2,27 @@
 
     ' NOT ANNOTATED
 
-    Public mainRocket As rocket
-    Private floor As Boolean = True
-    Private finiteFuel As Boolean = False
-    Private massDecay As Boolean = True
-    Private vacuum As Boolean = False
-    Private airThinning As Boolean = False
-    Private gravityThinning As Boolean = False
-    Private mainPlanet As celestial
+    ' lines to check: 9, 10, 57
+
+    Public mainRocket As rocket ' instatiating the rocket in the simulation
+
+    ' ALL OF THESE ASSUMPTIONS NEED TO BE ACCUMULATED INTO ONE ARRAY SO IT IS EASIER TO MODIFY THE NUMBER OF ASSUMPTIONS
+
+    Private floor As Boolean = True ' stores whether a floor is to be used
+    Private finiteFuel As Boolean = False ' UNNECESSARY stores whether the rocket burns fuel as it launches
+    Private massDecay As Boolean = True ' NEEDS TO BE RENAMED stores whether the program uses rocket mode or not
+    Private vacuum As Boolean = False ' whether the simulation is a vacuum
+    Private airThinning As Boolean = False ' whether the air density gets lower as altitude increases
+    Private gravityThinning As Boolean = False ' whether gravitational field strength decreases as altitude increases. I.e. whether a uniform field is assumed
+
+
+    Private mainPlanet As celestial ' Holds the planet being used for this simulation. Needs to be used so that it changes within hte simulation when the user changes the planet on the form
+
+    Private escapeVConst As Single = Math.Sqrt(2 * 6.67 * 6 * 10 ^ 13) ' stores the square root of 2 * G * mass of earth, used to determine the escape velocity for a given planet
 
     Public Enum celestial
+        ' this enum lets you choose one of the available celestial bodies, makes declaring dictionaries and passing variables easier.
+        ' Public so that other classes can pass this enum into function in this class
         mercury
         venus
         earth
@@ -25,10 +36,10 @@
         sun
     End Enum
 
-    Private radius As New Dictionary(Of celestial, Single)
-    Private celestialMass As New Dictionary(Of celestial, Single)
-    Private groundColour As New Dictionary(Of celestial, Brush)
-    Private skyColour As New Dictionary(Of celestial, Brush)
+    Private radius As New Dictionary(Of celestial, Single) ' stores the radii of each celestial body in a dictionary so it is easily found
+    Private celestialMass As New Dictionary(Of celestial, Single) ' stores the mass of each celestial body in a dictionary so it is easily found
+    Private groundColour As New Dictionary(Of celestial, Brush) ' stores the ground colour of each celestial body in a dictionary so it is easily found 
+    Private skyColour As New Dictionary(Of celestial, Brush) ' stores the sky colour of each celestial body in a dictionary so it is easily found
 
     ' Stores the initial conditions for the rocket
     ' displacement, velocity, acceleration, thrust
@@ -42,26 +53,32 @@
     Private axisStart As New vectorQuantity ' this is used to keep track of what value the axis should start at
     Private particleLocation As New vectorQuantity ' This keeps track of the fixed position where the particle is on the screen
     Private scale As Integer = 1 ' This is the scale for the simulation output. It can be interpretted as n pixels per meter.
-    Private particleSize As Single = 30
+    Private particleSize As Single = 30 ' this is the radius of the circle drawn on screen. it is completely visual and not required at all for physics calculations in the program
     Private goal As New goal ' Stores the vertical displacement at which the goal is currently set
 
-    Sub New(ByVal drag As Single, ByVal goal As Single, ByVal planet As celestial)
-        initialiseDictionaries()
-        mainPlanet = planet
-        Me.gravity = 9.81
-        Me.drag = drag
-        Me.goal.setGoal(goal)
-        particleLocation.x = 270
-        particleLocation.y = 255
-        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, massDecay, finiteFuel, initialValues, celestialMass(planet), radius(planet))
-        path = IO.Path.Combine(My.Application.Info.DirectoryPath, "temp.csv")
+    Sub New(ByVal drag As Single, ByVal goal As Single)
+        initialiseDictionaries() ' populate the dictionaries with data
+        mainPlanet = celestial.earth ' the simulation needs a planet to begin so earth is chosen as it is the most common used in A-level questions
+        Me.gravity = 9.81 ' UNSURE OF USE gravity is calculated in other parts of the program and is independant of other gravitational values
+        Me.drag = drag ' this holds the drag constant. Similar to before the drag calculations need to be revamped so they are physically accurate
+        Me.goal.setGoal(goal) ' creates the goal point for this simulation
+        particleLocation.x = 270 ' x coordinate of where the particle is onscreen
+        particleLocation.y = 255 ' y coordinate of where the particle is onscreen
+        mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, massDecay, finiteFuel, initialValues, celestialMass(celestial.earth), radius(celestial.earth)) ' set the rocket to a new rocket with the current initial values.
+        path = IO.Path.Combine(My.Application.Info.DirectoryPath, "temp.csv") ' locate the csv file which holds the temporary simulation data before it is saved
         ' This adds the titles for the table of data to the output spreadsheet
         Dim output As String = "time, mass, displacement x, displacement y, displacement, velocity x, velocity y, velocity, acceleration x, acceleration y, acceleration" & vbCrLf
         My.Computer.FileSystem.WriteAllText(path, output, False) ' adds the string to the output .csv file. path is the location, output is the string to be added and false means don't append, overwrite instead
     End Sub
 
-    ' adds radius then mass of all celestial bodies in dictionary
+    ' adds radius, mass, ground colour and sky colour of all celestial bodies in dictionaries
     Private Sub initialiseDictionaries()
+
+        ' radius of planet
+        ' mass of planet
+        ' groundcolour of planet
+        ' skycolour of planet
+
         radius.Add(celestial.mercury, 2440000.0) ' mercury
         celestialMass.Add(celestial.mercury, 3.285E+23)
         groundColour.Add(celestial.mercury, Brushes.DarkSlateGray)
@@ -119,12 +136,12 @@
 
     End Sub
 
-    Public Sub updatePlanet(ByVal planet As celestial)
-        mainPlanet = planet
-        mainRocket.updatePlanet(celestialMass(planet), radius(planet))
+    Public Sub updatePlanet(ByVal planet As celestial) ' this sub is called when the user changes the planet used on the form
+        mainPlanet = planet ' reset the planet in this class
+        mainRocket.updatePlanet(celestialMass(planet), radius(planet)) ' reset the celestial values for the rocket to calculate it's gravitational force of attraction
     End Sub
 
-    Public Sub refreshRocket()
+    Public Sub refreshRocket() ' reset the rocket. Used when the initial values or assumptions are changed by the user
         mainRocket = New rocket(vacuum, floor, airThinning, gravityThinning, drag, massDecay, finiteFuel, initialValues, celestialMass(mainPlanet), radius(mainPlanet))
     End Sub
 
@@ -149,15 +166,16 @@
             End If
         End If
 
-        axisStart.x = (mainRocket.displacement.x * -scale) Mod 50
+        ' draw the gridlines
+        axisStart.x = (mainRocket.displacement.x * -scale) Mod 50 ' modulo 50 because the grid lines are drawn every 50 pixels
         axisStart.y = (mainRocket.displacement.y * -scale) Mod 50
-        While axisStart.x >= 50
-            axisStart.x = axisStart.x Mod 50
-        End While
+        'While axisStart.x >= 50
+        '    axisStart.x = axisStart.x Mod 50
+        'End While
 
-        While axisStart.y >= 50
-            axisStart.y = axisStart.y Mod 50
-        End While
+        'While axisStart.y >= 50
+        '    axisStart.y = axisStart.y Mod 50
+        'End While
 
 
         ' draw the lines marking the axis points
@@ -188,6 +206,13 @@
 
 
     End Sub
+
+    Public Function escaped() As Boolean
+        If mainRocket.velocity.y > escapeVConst / (Math.Sqrt(radius(mainPlanet) + mainRocket.displacement.y)) Then ' if the y component of the rocket's velocity is greater than the body's escape velocity
+            Return True ' the rocket has escaped so return true
+        End If
+        Return False ' otherwise return false
+    End Function
 
     Sub export()
         Dim variables As String() = {t / 1000, mainRocket.mass, mainRocket.displacement.x, mainRocket.displacement.y, mainRocket.displacement.magnitude, mainRocket.velocity.x, mainRocket.velocity.y, mainRocket.velocity.magnitude, mainRocket.acceleration.x, mainRocket.acceleration.y, mainRocket.acceleration.magnitude}

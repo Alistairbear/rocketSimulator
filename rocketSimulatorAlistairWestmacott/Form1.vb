@@ -6,16 +6,17 @@
     Dim g As Graphics ' create a local copy of the graphics handler. This is passed into subs which draw on the main simulation
     Dim realTime As Integer = 0 ' stores the number of seconds elapsed since the start of the simulation (from when launch is pressed)
     Dim simulationValues() As Single ' stores information, namely initial values, about the simulation before it launches
-    Private escapeVConst As Single = Math.Sqrt(2 * 6.67 * 6 * 10 ^ 13) ' stores the square root of 2 * G * mass of earth
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+        
+
+        mainSimulation = New simulation(txtDrag.Text, txtGoal.Text) ' create a new simulation
 
         For Each i In [Enum].GetValues(GetType(simulation.celestial))
             cmbPlanets.Items.Add(i)
         Next
         cmbPlanets.SelectedIndex = 2
-
-        mainSimulation = New simulation(txtDrag.Text, txtGoal.Text, cmbPlanets.SelectedIndex) ' create a new simulation
 
         AddHandler pctSimulation.Paint, AddressOf Me.pctOutput_Paint ' this line links the pctOutput_paint() sub to the event of the simulation picture box being painted
         ' it basically means that whenever the form refreshes, the 
@@ -73,7 +74,7 @@
         ' export the rocket's variables into the temporary .csv file so that it can be saved later
         mainSimulation.export()
         ' if the rocket's vertical velocity is greater than the escape velocity constant over the square root of the distance from the centre of the earth then inform the user they have reached escape velocity
-        If mainSimulation.mainRocket.velocity.y > escapeVConst / (Math.Sqrt(6371000 + mainSimulation.mainRocket.displacement.y)) Then
+        If mainSimulation.escaped Then
             MsgBox("You have reached escape velocity")
         End If
     End Sub
@@ -164,5 +165,17 @@
 
     Private Sub btnPlanet_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPlanet.Click
         mainSimulation.updatePlanet(cmbPlanets.SelectedIndex)
+    End Sub
+
+    Private Sub btnPause_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPause.Click
+        If btnPause.Text = "Pause" Then
+            tmrMain.Stop()
+            tmrReal.Stop()
+            btnPause.Text = "Resume"
+        Else
+            tmrMain.Start()
+            tmrReal.Start()
+            btnPause.Text = "Pause"
+        End If
     End Sub
 End Class

@@ -58,43 +58,7 @@
             radius = currentRow(1)
             exhaustV = currentRow(2)
 
-            'dmdt = fuelMass * 0.01
             dmdt = Math.PI * exhaustV * (radius ^ 2)
-
-            'While Not MyReader.EndOfData
-            '    Try
-            '        currentRow = MyReader.ReadFields()
-            '        'If IsNumeric(currentRow(0)) Then
-            '        '    rocketThrust = currentRow(0)
-            '        'End If
-            '        If IsNumeric(currentRow(1)) Then
-            '            fuelMass = currentRow(1)
-            '        End If
-            '        If IsNumeric(currentRow(2)) Then
-            '            rocketMass = currentRow(2)
-            '        End If
-
-            '    Catch ex As Microsoft.VisualBasic.FileIO.MalformedLineException ' catches corrupt lines (ie lines which are not formatted correctly
-            '        MsgBox("Line " & ex.Message & "is not valid and will be skipped.")
-            '    End Try
-            '    Try
-            '        currentRow = MyReader.ReadFields()
-            '        'If IsNumeric(currentRow(0)) Then
-            '        '    ' air resistance constant
-            '        'End If
-            '        'If IsNumeric(currentRow(1)) Then
-            '        '    'fuelMass = currentRow(1)
-            '        '    'fuel tank special stats
-            '        'End If
-            '        If IsNumeric(currentRow(2)) Then
-            '            rocketThrust = currentRow(2)
-            '        End If
-
-            '    Catch ex As Microsoft.VisualBasic.FileIO.MalformedLineException ' catches corrupt lines (ie lines which are not formatted correctly
-            '        MsgBox("Line " & ex.Message & "is not valid and will be skipped.")
-            '    End Try
-            '    count += 1
-            'End While
         End Using
     End Sub
 
@@ -116,7 +80,8 @@
                 End If
                 thrustForce.x = 0
                 'thrustForce.y = rocketThrust
-                thrustForce.y = exhaustV * dmdt
+                'thrustForce.y = exhaustV * dmdt
+                thrustForce = velocity.unit * exhaustV * dmdt
             Else
                 thrustForce.reset()
             End If

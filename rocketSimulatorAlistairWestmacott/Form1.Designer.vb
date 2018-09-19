@@ -52,6 +52,7 @@ Partial Class Form1
         Me.lblPlanet = New System.Windows.Forms.Label()
         Me.btnPlanet = New System.Windows.Forms.Button()
         Me.cbxColours = New System.Windows.Forms.CheckBox()
+        Me.btnPause = New System.Windows.Forms.Button()
         CType(Me.pctSimulation, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.sldSpeed, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -146,7 +147,7 @@ Partial Class Form1
         '
         'btnControl
         '
-        Me.btnControl.Location = New System.Drawing.Point(174, 12)
+        Me.btnControl.Location = New System.Drawing.Point(336, 12)
         Me.btnControl.Name = "btnControl"
         Me.btnControl.Size = New System.Drawing.Size(75, 23)
         Me.btnControl.TabIndex = 12
@@ -288,11 +289,21 @@ Partial Class Form1
         Me.cbxColours.Text = "Use planetary colours"
         Me.cbxColours.UseVisualStyleBackColor = True
         '
+        'btnPause
+        '
+        Me.btnPause.Location = New System.Drawing.Point(174, 12)
+        Me.btnPause.Name = "btnPause"
+        Me.btnPause.Size = New System.Drawing.Size(75, 23)
+        Me.btnPause.TabIndex = 34
+        Me.btnPause.Text = "Pause"
+        Me.btnPause.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(968, 643)
+        Me.Controls.Add(Me.btnPause)
         Me.Controls.Add(Me.cbxColours)
         Me.Controls.Add(Me.btnPlanet)
         Me.Controls.Add(Me.lblPlanet)
@@ -356,5 +367,6 @@ Partial Class Form1
     Friend WithEvents lblPlanet As System.Windows.Forms.Label
     Friend WithEvents btnPlanet As System.Windows.Forms.Button
     Friend WithEvents cbxColours As System.Windows.Forms.CheckBox
+    Friend WithEvents btnPause As System.Windows.Forms.Button
 
 End Class

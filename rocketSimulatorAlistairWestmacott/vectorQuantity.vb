@@ -54,7 +54,14 @@
 
     Public ReadOnly Property unit As vectorQuantity
         Get
-            Return Me / Me.magnitude
+            If Me.magnitude = 0 Then
+                Dim temp As New vectorQuantity
+                temp.y = 1
+                Return temp
+            Else
+                Return Me / Me.magnitude
+            End If
+
         End Get
     End Property
 
